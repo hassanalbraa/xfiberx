@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibrex - إتمام الطلب</title>
+    
+    <!-- Tailwind CSS & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #FF6A00;
+            background: rgba(255, 255, 255, 0.08);
+            outline: none;
+        }
+
+        .payment-option {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .payment-option.active {
+            border-color: #FF6A00;
+            background: rgba(255, 106, 0, 0.05);
+        }
+
+        /* Success Overlay */
+        #success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .btn-confirm {
+            background: #FF6A00;
+            box-shadow: 0 10px 30px rgba(255, 106, 0, 0.3);
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+        @keyframes dots {
+            0%, 20% { color: rgba(0,0,0,0); text-shadow: .2em 0 0 rgba(0,0,0,0), .4em 0 0 rgba(0,0,0,0); }
+            40% { color: white; text-shadow: .2em 0 0 rgba(0,0,0,0), .4em 0 0 rgba(0,0,0,0); }
+            60% { text-shadow: .2em 0 0 white, .4em 0 0 rgba(0,0,0,0); }
+            80%, 100% { text-shadow: .2em 0 0 white, .4em 0 0 white; }
+        }
+    </style>
+</head>
+<body>
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+<!-- Header -->
+<nav class="p-6 border-b border-white/5 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-40">
+    <div class="font-black text-2xl tracking-tighter">FIBREX<span class="text-orange-500">.</span></div>
+    <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">إتمام الشراء الآمن</div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-10 px-6">
+    <form id="checkout-form" class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Right: Shipping & Payment Details -->
+        <div class="lg:col-span-8 space-y-8">
+            
+            <!-- 1. Shipping Information -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-sm font-bold">1</span>
+                    <h2 class="text-xl font-bold">معلومات الشحن</h2>
+                </div>
+                
+                <div class="glass-card p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="text-xs font-bold text-gray-500 block mb-2">الاسم الكامل</label>
+                        <input type="text" id="full-name" required class="input-field w-full p-4 rounded-xl" placeholder="أدخل اسمك المستلم">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 block mb-2">رقم الهاتف (واتساب)</label>
+                        <input type="tel" id="phone" required class="input-field w-full p-4 rounded-xl text-left" placeholder="+249">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 block mb-2">المدينة / المنطقة</label>
+                        <select id="city" class="input-field w-full p-4 rounded-xl appearance-none">
+                            <option value="khartoum">الخرطوم</option>
+                            <option value="bahri">الخرطوم بحري</option>
+                            <option value="omdurman">أم درمان</option>
+                            <option value="port-sudan">بورتسودان</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-xs font-bold text-gray-500 block mb-2">العنوان بالتفصيل</label>
+                        <textarea id="address" required class="input-field w-full p-4 rounded-xl h-24" placeholder="الحي، الشارع، رقم المنزل أو أقرب معلم بارز"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Payment Method -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-sm font-bold">2</span>
+                    <h2 class="text-xl font-bold">طريقة الدفع</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div onclick="selectPayment('bankak')" id="pay-bankak" class="payment-option glass-card p-6 flex flex-col items-center gap-3 active">
+                        <i class="fas fa-university text-2xl text-orange-500"></i>
+                        <span class="font-bold text-sm">تطبيق بنكك</span>
+                    </div>
+                    <div onclick="selectPayment('cod')" id="pay-cod" class="payment-option glass-card p-6 flex flex-col items-center gap-3">
+                        <i class="fas fa-money-bill-wave text-2xl text-gray-500"></i>
+                        <span class="font-bold text-sm">الدفع عند الاستلام</span>
+                    </div>
+                    <div onclick="selectPayment('fawry')" id="pay-fawry" class="payment-option glass-card p-6 flex flex-col items-center gap-3">
+                        <i class="fas fa-mobile-alt text-2xl text-gray-500"></i>
+                        <span class="font-bold text-sm">تطبيق فوري</span>
+                    </div>
+                </div>
+                
+                <div id="bank-details" class="glass-card p-6 bg-orange-500/5 border-orange-500/20">
+                    <p class="text-xs text-orange-500 font-bold mb-2"><i class="fas fa-info-circle ml-1"></i> معلومات التحويل:</p>
+                    <p class="text-sm text-gray-300">الرجاء التحويل للحساب: <span class="font-mono text-white font-bold">1234567</span> باسم (شركة فيبركس) وإرفاق الإشعار عند الاستلام.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Left: Summary & Action -->
+        <div class="lg:col-span-4">
+            <div class="glass-card p-8 sticky top-28 space-y-6">
+                <h2 class="text-xl font-bold">ملخص الطلب النهائي</h2>
+                
+                <div id="summary-items" class="space-y-4 max-h-48 overflow-y-auto pr-2">
+                    <!-- سيتم عرض المنتجات هنا بإيجاز -->
+                </div>
+
+                <div class="space-y-3 pt-6 border-t border-white/5">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">المجموع</span>
+                        <span id="subtotal" class="font-bold">0 ج.س</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">رسوم التوصيل</span>
+                        <span id="shipping" class="font-bold">2,500 ج.س</span>
+                    </div>
+                    <div class="flex justify-between pt-4 border-t border-white/5">
+                        <span class="text-lg font-bold">الإجمالي</span>
+                        <span id="total" class="text-2xl font-black text-orange-500">0 ج.س</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="confirm-order-btn" class="btn-confirm w-full py-5 rounded-2xl font-black text-black tracking-widest flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95">
+                    <span>تأكيد الطلب الآن</span>
+                    <i class="fas fa-check-circle"></i>
+                </button>
+                
+                <p class="text-[10px] text-gray-500 text-center leading-relaxed">
+                    بالنقر على "تأكيد الطلب"، فإنك توافق على شروط وأحكام فيبركس الخاصة بالبيع والتوصيل في السودان.
+                </p>
+            </div>
+        </div>
+    </form>
+</main>
+
+<!-- Success Overlay -->
+<div id="success-overlay">
+    <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mb-6 animate-bounce">
+        <i class="fas fa-check text-4xl text-black"></i>
+    </div>
+    <h2 class="text-4xl font-black mb-2">شكراً لثقتك!</h2>
+    <p class="text-gray-400 mb-8">تم استلام طلبك بنجاح. رقم الطلب: <span id="order-id-display" class="text-white font-mono">#FBX-0000</span></p>
+    <div class="flex gap-4">
+        <a href="index.html" class="bg-white text-black px-8 py-3 rounded-xl font-bold">العودة للمتجر</a>
+        <a href="dashboard.html" class="bg-white/10 text-white px-8 py-3 rounded-xl font-bold border border-white/10">تتبع الطلب</a>
+    </div>
+</div>
+
+<script>
+    // --- Firebase Integration Ready ---
+
+    let selectedPaymentMethod = 'bankak';
+    const SHIPPING_FEE = 2500;
+    
+    // محاكاة بيانات السلة القادمة من الصفحة السابقة (أو Firestore)
+    const cartData = [
+        { name: "قميص فيبركس الأسود", price: 18500, qty: 1 },
+        { name: "بنطال تشينو", price: 12000, qty: 1 }
+    ];
+
+    function initCheckout() {
+        const itemsContainer = document.getElementById('summary-items');
+        let subtotal = 0;
+
+        itemsContainer.innerHTML = cartData.map(item => {
+            subtotal += item.price * item.qty;
+            return `
+                <div class="flex justify-between text-xs">
+                    <span class="text-gray-400">${item.qty}x ${item.name}</span>
+                    <span class="font-bold">${(item.price * item.qty).toLocaleString()}</span>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('subtotal').innerText = subtotal.toLocaleString() + " ج.س";
+        document.getElementById('total').innerText = (subtotal + SHIPPING_FEE).toLocaleString() + " ج.س";
+    }
+
+    function selectPayment(method) {
+        selectedPaymentMethod = method;
+        document.querySelectorAll('.payment-option').forEach(opt => {
+            opt.classList.remove('active');
+            opt.querySelector('i').classList.replace('text-orange-500', 'text-gray-500');
+        });
+        
+        const activeOpt = document.getElementById('pay-' + method);
+        activeOpt.classList.add('active');
+        activeOpt.querySelector('i').classList.replace('text-gray-500', 'text-orange-500');
+
+        // إظهار/إخفاء تفاصيل البنك
+        document.getElementById('bank-details').style.display = method === 'bankak' ? 'block' : 'none';
+    }
+
+    // معالجة إرسال الطلب (Submit to Firebase)
+    document.getElementById('checkout-form').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('confirm-order-btn');
+        const btnText = btn.querySelector('span');
+        
+        // 1. حالة التحميل
+        btn.disabled = true;
+        btnText.innerHTML = "جاري تأكيد الطلب <span class='loading-dots'></span>";
+        btn.style.opacity = "0.7";
+
+        // 2. تجميع البيانات للفايربيس
+        const orderData = {
+            customer: {
+                name: document.getElementById('full-name').value,
+                phone: document.getElementById('phone').value,
+                city: document.getElementById('city').value,
+                address: document.getElementById('address').value
+            },
+            payment: selectedPaymentMethod,
+            items: cartData,
+            total: cartData.reduce((acc, i) => acc + (i.price * i.qty), 0) + SHIPPING_FEE,
+            status: 'pending',
+            createdAt: new Date() // ServerTimestamp in Firebase
+        };
+
+        console.log("إرسال الطلب إلى Firestore...", orderData);
+
+        // 3. محاكاة نجاح العملية (Firebase addDoc)
+        setTimeout(() => {
+            const randomOrderId = "FBX-" + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('order-id-display').innerText = "#" + randomOrderId;
+            
+            // إظهار واجهة النجاح
+            document.getElementById('success-overlay').style.display = 'flex';
+            window.scrollTo(0,0);
+        }, 2500);
+    };
+
+    window.onload = initCheckout;
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibrex - تتبع الطلب</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+        }
+
+        /* Timeline Styles */
+        .step-line {
+            position: absolute;
+            right: 1.25rem;
+            top: 2rem;
+            bottom: 0;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 0;
+        }
+
+        .step-item.active .step-dot {
+            background: #FF6A00;
+            box-shadow: 0 0 15px #FF6A00;
+        }
+
+        .step-item.active .step-content {
+            opacity: 1;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 10;
+            margin-right: -5px;
+        }
+
+        .step-content {
+            opacity: 0.4;
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+<nav class="p-6 border-b border-white/5 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-40">
+    <div class="font-black text-2xl tracking-tighter">FIBREX<span class="text-orange-500">.</span></div>
+    <a href="dashboard.html" class="text-xs font-bold text-gray-500 hover:text-white transition-all uppercase">العودة لحسابي</a>
+</nav>
+
+<main class="max-w-4xl mx-auto py-10 px-6">
+    
+    <!-- Search Order Bar -->
+    <div class="mb-12 text-center">
+        <h1 class="text-3xl font-black mb-4">تتبع طلبك</h1>
+        <p class="text-gray-400 text-sm mb-8">أدخل رقم الطلب المرسل إليك في رسالة التأكيد</p>
+        
+        <div class="flex max-w-md mx-auto gap-2 bg-white/5 p-2 rounded-2xl border border-white/10">
+            <input type="text" id="order-search-input" placeholder="FBX-0000" class="bg-transparent flex-1 px-4 py-2 outline-none font-mono text-center text-orange-500">
+            <button onclick="searchOrder()" class="bg-white text-black px-6 py-2 rounded-xl font-bold hover:bg-orange-500 hover:text-white transition-all">بحث</button>
+        </div>
+    </div>
+
+    <!-- Order Status Card (Firebase Data) -->
+    <div id="tracking-result" class="space-y-8 animate-in" style="display: none;">
+        
+        <div class="glass-card p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+                <span class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">رقم الطلب الحالي</span>
+                <h2 id="order-id-label" class="text-2xl font-black font-mono">#FBX-2901</h2>
+            </div>
+            <div class="text-right">
+                <span id="status-badge" class="bg-orange-500/20 text-orange-500 px-4 py-1 rounded-full text-xs font-bold">قيد المعالجة</span>
+                <p class="text-[10px] text-gray-500 mt-2">آخر تحديث: قبل 5 دقائق</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Timeline -->
+            <div class="lg:col-span-7 glass-card p-10 relative">
+                <div class="step-line" id="line-progress"></div>
+                
+                <div class="space-y-12">
+                    <!-- Step 1 -->
+                    <div class="step-item active flex items-start gap-8 relative">
+                        <div class="step-dot mt-2"></div>
+                        <div class="step-content">
+                            <h4 class="font-bold text-lg">تم استلام الطلب</h4>
+                            <p class="text-sm text-gray-500">استلمنا طلبك وهو الآن في مرحلة المراجعة المالية.</p>
+                            <span class="text-[10px] text-gray-600 font-mono">10:30 AM</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-item flex items-start gap-8 relative" id="step-processing">
+                        <div class="step-dot mt-2"></div>
+                        <div class="step-content">
+                            <h4 class="font-bold text-lg">قيد التجهيز</h4>
+                            <p class="text-sm text-gray-500">يتم الآن تغليف منتجاتك بعناية في مركز التوزيع الخاص بنا.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-item flex items-start gap-8 relative" id="step-shipped">
+                        <div class="step-dot mt-2"></div>
+                        <div class="step-content">
+                            <h4 class="font-bold text-lg">خرج للتوصيل</h4>
+                            <p class="text-sm text-gray-500">طلبك الآن مع المندوب وفي الطريق إلى عنوانك.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step-item flex items-start gap-8 relative" id="step-delivered">
+                        <div class="step-dot mt-2"></div>
+                        <div class="step-content">
+                            <h4 class="font-bold text-lg">تم التسليم</h4>
+                            <p class="text-sm text-gray-500">نتمنى أن تنال منتجات فيبركس إعجابك!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details Sidebar -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-card p-6">
+                    <h3 class="font-bold mb-4 border-b border-white/5 pb-2">ملخص الشحن</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-truck-moving text-orange-500"></i>
+                            <div>
+                                <p class="text-[10px] text-gray-500">شركة الشحن</p>
+                                <p class="text-sm font-bold">فيبركس اكسبريس</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-map-marker-alt text-orange-500"></i>
+                            <div>
+                                <p class="text-[10px] text-gray-500">عنوان التوصيل</p>
+                                <p class="text-sm font-bold">الخرطوم، حي المعمورة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 border-dashed border-orange-500/30">
+                    <p class="text-xs text-center text-gray-400">هل تواجه مشكلة؟</p>
+                    <a href="https://wa.me/249xxxxxxx" class="mt-4 flex items-center justify-center gap-2 bg-green-600/10 text-green-500 py-3 rounded-xl font-bold hover:bg-green-600 hover:text-white transition-all">
+                        <i class="fab fa-whatsapp"></i> تحدث مع الدعم الفني
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Order Found State -->
+    <div id="no-result" class="text-center py-20" style="display: none;">
+        <i class="fas fa-search text-4xl text-gray-800 mb-4"></i>
+        <p class="text-gray-500 italic">عذراً، لم نجد طلباً بهذا الرقم. تأكد من صحة الكود.</p>
+    </div>
+
+</main>
+
+<script>
+    // --- Firebase Logic Simulation ---
+
+    function searchOrder() {
+        const input = document.getElementById('order-search-input').value;
+        const result = document.getElementById('tracking-result');
+        const noResult = document.getElementById('no-result');
+
+        if(!input) return alert("الرجاء إدخال رقم الطلب");
+
+        // محاكاة استعلام Firebase: db.collection('orders').doc(input).onSnapshot(...)
+        console.log("Searching for order in Firebase: " + input);
+
+        // محاكاة جلب البيانات
+        if(input.toUpperCase() === "FBX-2901") {
+            noResult.style.display = 'none';
+            result.style.display = 'block';
+            updateOrderProgress('processing'); // هذه القيمة ستأتي من حقل 'status' في الفايربيس
+        } else {
+            result.style.display = 'none';
+            noResult.style.display = 'block';
+        }
+    }
+
+    function updateOrderProgress(status) {
+        const steps = ['received', 'processing', 'shipped', 'delivered'];
+        const statusIdx = steps.indexOf(status);
+        
+        const items = document.querySelectorAll('.step-item');
+        items.forEach((item, idx) => {
+            if(idx <= statusIdx) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // تحديث النص العلوي
+        const badge = document.getElementById('status-badge');
+        const labels = {
+            'received': 'تم الاستلام',
+            'processing': 'قيد التجهيز',
+            'shipped': 'خرج للتوصيل',
+            'delivered': 'تم التسليم'
+        };
+        badge.innerText = labels[status];
+    }
+</script>
+
+</body>
+</html>
+

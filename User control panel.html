@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibrex - اعدادات المستخدم</title>
+    
+    <!-- Tailwind CSS & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; overflow-x: hidden; }
+        
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+        }
+
+        .tab-link.active {
+            background: #FF6A00;
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 106, 0, 0.2);
+        }
+
+        .custom-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .custom-input:focus {
+            border-color: #FF6A00;
+            background: rgba(255, 255, 255, 0.08);
+            outline: none;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+<div class="min-h-screen py-10 px-4 md:px-10">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+            <div>
+                <h1 class="text-3xl font-black mb-1">اعدادات السمتخدم</h1>
+                <p class="text-gray-400 text-sm">مرحباً <span id="header-user-name" class="text-orange-500">...</span>، أهلاً بك مجدداً.</p>
+            </div>
+            <button onclick="handleLogout()" class="bg-red-500/10 text-red-500 px-6 py-2 rounded-xl text-sm font-bold border border-red-500/20 hover:bg-red-500 hover:text-white transition-all">
+                <i class="fas fa-sign-out-alt ml-2"></i> تسجيل الخروج
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Navigation Side -->
+            <div class="lg:col-span-3 space-y-2">
+                <button onclick="switchTab(event, 'tab-orders')" class="tab-link active w-full text-right p-4 rounded-xl flex items-center gap-3 transition-all">
+                    <i class="fas fa-box-open"></i> <span>طلباتي السابقة</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-addresses')" class="tab-link w-full text-right p-4 rounded-xl flex items-center gap-3 transition-all">
+                    <i class="fas fa-map-marker-alt"></i> <span>عناوين الشحن</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-profile')" class="tab-link w-full text-right p-4 rounded-xl flex items-center gap-3 transition-all">
+                    <i class="fas fa-user-edit"></i> <span>تعديل البروفايل</span>
+                </button>
+            </div>
+
+            <!-- Content Side -->
+            <div class="lg:col-span-9">
+                
+                <!-- 1. Orders Section -->
+                <div id="tab-orders" class="content-panel space-y-4">
+                    <h2 class="text-xl font-bold mb-4">طلباتك</h2>
+                    <div id="orders-container" class="space-y-4">
+                        <!-- سيتم تعبئة هذا القسم تلقائياً من الفايربيس -->
+                        <div class="glass-card p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 bg-white/5 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-tshirt text-gray-500"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">طلب رقم #FBX-102</h4>
+                                    <p class="text-xs text-gray-400">تاريخ الطلب: 12/02/2024</p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <span class="bg-orange-500/20 text-orange-500 text-[10px] px-3 py-1 rounded-full font-bold">قيد الشحن</span>
+                            </div>
+                            <div class="font-bold text-orange-500">0 ج.س</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Addresses Section -->
+                <div id="tab-addresses" class="content-panel hidden space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-bold">العناوين المسجلة</h2>
+                        <button onclick="openAddressModal()" class="text-sm bg-white text-black px-4 py-2 rounded-lg font-bold">إضافة عنوان جديد</button>
+                    </div>
+                    <div id="addresses-container" class="grid md:grid-cols-2 gap-4">
+                        <!-- مثال لعناوين مسجلة -->
+                        <div class="glass-card p-5 border-orange-500/30 border">
+                            <h4 class="font-bold text-orange-500 mb-2">العنوان الحالي</h4>
+                            <p class="text-sm text-gray-300 mb-4">الخرطوم، حي المعمورة، شارع الستين، عمارة 40</p>
+                            <button class="text-[10px] text-red-500 font-bold uppercase hover:underline">حذف العنوان</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Profile Section (Firebase Ready Form) -->
+                <div id="tab-profile" class="content-panel hidden">
+                    <h2 class="text-xl font-bold mb-6">إعدادات الحساب</h2>
+                    <div class="glass-card p-8">
+                        <form id="profile-form" class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="text-xs text-gray-400 block mb-2">الاسم بالكامل</label>
+                                    <input type="text" id="user-name" class="custom-input w-full p-4 rounded-xl" placeholder="أدخل اسمك">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-400 block mb-2">رقم الهاتف</label>
+                                    <input type="tel" id="user-phone" class="custom-input w-full p-4 rounded-xl text-left" placeholder="+249">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 block mb-2">كلمة المرور الجديدة (اختياري)</label>
+                                <input type="password" id="user-password" class="custom-input w-full p-4 rounded-xl" placeholder="اتركه فارغاً إذا لا تود التغيير">
+                            </div>
+                            <button type="submit" id="save-profile-btn" class="w-full bg-orange-500 p-4 rounded-xl font-bold flex justify-center items-center gap-3 hover:bg-orange-600 transition-all">
+                                <span class="loading-spinner" id="spinner"></span>
+                                <span>حفظ التعديلات</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. التبديل بين التبويبات
+    function switchTab(e, tabId) {
+        document.querySelectorAll('.content-panel').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.remove('hidden');
+        e.currentTarget.classList.add('active');
+    }
+
+    // 2. منطق الربط بالفايربيس (Firebase Integration Logic)
+    
+    // عند تحميل الصفحة، جلب بيانات المستخدم
+    window.onload = function() {
+        console.log("جاهز لجلب البيانات من Firebase...");
+        // هنا يتم استدعاء بيانات المستخدم من Firestore ووضعها في الحقول
+        // document.getElementById('user-name').value = userDoc.name;
+        document.getElementById('header-user-name').innerText = "أحمد محمد"; // مثال
+    };
+
+    // حفظ بيانات البروفايل
+    document.getElementById('profile-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const spinner = document.getElementById('spinner');
+        const btnText = document.querySelector('#save-profile-btn span:last-child');
+        
+        // إظهار اللودينق
+        spinner.style.display = 'block';
+        btnText.innerText = "جاري الحفظ...";
+
+        // استخراج البيانات
+        const updatedData = {
+            name: document.getElementById('user-name').value,
+            phone: document.getElementById('user-phone').value,
+            // password: document.getElementById('user-password').value
+        };
+
+        // محاكاة عملية الربط (هنا تضع كود الفايربيس updateDoc)
+        setTimeout(() => {
+            spinner.style.display = 'none';
+            btnText.innerText = "تم التحديث بنجاح!";
+            document.getElementById('save-profile-btn').classList.replace('bg-orange-500', 'bg-green-600');
+            
+            setTimeout(() => {
+                btnText.innerText = "حفظ التعديلات";
+                document.getElementById('save-profile-btn').classList.replace('bg-green-600', 'bg-orange-500');
+            }, 2000);
+        }, 1500);
+    };
+
+    function handleLogout() {
+        if(confirm("هل تريد تسجيل الخروج؟")) {
+            // auth.signOut();
+            window.location.href = "/login.html";
+        }
+    }
+</script>
+
+</body>
+</html>
+

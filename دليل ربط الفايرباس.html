@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل ربط فيبركس بالفايربيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #050505; color: #fff; }
+        .glass { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
+        .step-number { width: 30px; height: 30px; background: #FF6A00; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+        .code-block { background: #000; padding: 1rem; border-radius: 0.75rem; font-family: monospace; color: #00ff00; font-size: 12px; border: 1px solid #222; overflow-x: auto; }
+    </style>
+</head>
+<body class="p-4 lg:p-10">
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- القسم الأول: الدليل التعليمي -->
+        <div class="lg:col-span-5 space-y-6">
+            <h1 class="text-3xl font-black text-orange-500 mb-8">دليل التشغيل الحقيقي</h1>
+            
+            <div class="glass p-6 space-y-6">
+                <div class="flex gap-4">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3 class="font-bold">إنشاء المشروع</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">ادخل على <a href="https://console.firebase.google.com/" class="underline text-blue-400">Firebase Console</a>، أنشئ مشروعاً جديداً، ثم اختر "Web App".</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3 class="font-bold">نسخ الإعدادات</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">انسخ كود `firebaseConfig` وضعه في الخانة المخصصة في الكود البرمجي (على اليسار).</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3 class="font-bold">تفعيل Firestore</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">من القائمة الجانبية، اختر Firestore Database ثم "Create". تأكد من اختيار "Test Mode" للسماح بالنشر الفوري.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h3 class="font-bold">تفعيل الهوية (Auth)</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">فعل خيار "Anonymous Sign-in" من قسم Authentication للسماح بالاتصال الآمن دون تعقيد.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass p-6 bg-orange-500/5 border-orange-500/20">
+                <h4 class="font-bold text-orange-500 mb-2"><i class="fas fa-info-circle ml-2"></i> ملاحظة هامة</h4>
+                <p class="text-xs leading-relaxed text-gray-400">إذا لم تضع بيانات الـ Config الصحيحة، ستظل لوحة التحكم على اليمين تعرض (0) ولن يعمل زر النشر. الفايربيس هو المحرك الذي يشغل كل شيء.</p>
+            </div>
+        </div>
+
+        <!-- القسم الثاني: لوحة التحكم المربوطة فعلياً -->
+        <div class="lg:col-span-7">
+            <div class="glass p-8 min-h-[600px] relative">
+                
+                <!-- هيدر اللوحة -->
+                <div class="flex justify-between items-center mb-10">
+                    <div>
+                        <h2 class="text-2xl font-black">لوحة التحكم المباشرة</h2>
+                        <div id="status-tag" class="text-[10px] font-bold text-red-500 mt-1 uppercase">
+                            <i class="fas fa-plug ml-1"></i> غير متصل بقاعدة البيانات
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('modal').style.display='flex'" class="bg-orange-500 text-black px-6 py-3 rounded-xl font-bold text-xs hover:scale-105 transition-transform">
+                        <i class="fas fa-plus ml-2"></i> نشر منتج
+                    </button>
+                </div>
+
+                <!-- الإحصائيات -->
+                <div class="grid grid-cols-3 gap-4 mb-10">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">المبيعات</p>
+                        <div class="text-xl font-black" id="total-sales">0</div>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">المستخدمين</p>
+                        <div class="text-xl font-black" id="total-users">0</div>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">المنتجات</p>
+                        <div class="text-xl font-black" id="total-products">0</div>
+                    </div>
+                </div>
+
+                <!-- قائمة المنتجات -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold border-b border-white/5 pb-2">أحدث المنتجات في Firestore</h3>
+                    <div id="products-list" class="space-y-2 max-h-[300px] overflow-y-auto">
+                        <p class="text-xs text-gray-600 italic py-10 text-center">لا توجد بيانات.. بانتظار ربط الفايربيس</p>
+                    </div>
+                </div>
+
+                <!-- نافذة النشر (Modal) -->
+                <div id="modal" class="absolute inset-0 bg-black/95 z-50 flex items-center justify-center p-6 rounded-3xl" style="display:none;">
+                    <div class="w-full max-w-md space-y-4">
+                        <h3 class="text-xl font-black text-center mb-6">نشر لـ Cloud Firestore</h3>
+                        <input type="text" id="p_name" placeholder="اسم المنتج" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-orange-500">
+                        <input type="number" id="p_price" placeholder="السعر (ج.س)" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-orange-500">
+                        <input type="text" id="p_img" placeholder="رابط الصورة" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-orange-500">
+                        <div class="flex gap-4 pt-4">
+                            <button onclick="document.getElementById('modal').style.display='none'" class="flex-1 text-gray-500 text-sm">إلغاء</button>
+                            <button id="btn-save" onclick="publishToFirebase()" class="flex-1 bg-white text-black font-black py-4 rounded-xl hover:bg-orange-500 transition-colors">نشر الآن</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Logic Integration -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // --- ضع إعداداتك هنا ---
+        const firebaseConfig = {
+            apiKey: "", 
+            authDomain: "",
+            projectId: "",
+            storageBucket: "",
+            messagingSenderId: "",
+            appId: ""
+        };
+
+        // منع التشغيل إذا لم تكن البيانات موجودة
+        if (firebaseConfig.apiKey !== "") {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
+
+            // تفعيل الاتصال
+            signInAnonymously(auth).then(() => {
+                document.getElementById('status-tag').innerHTML = '<i class="fas fa-check-circle text-green-500"></i> متصل بالفايربيس';
+                document.getElementById('status-tag').className = "text-[10px] font-bold text-green-500 mt-1 uppercase";
+                startListening(db);
+            });
+
+            // وظيفة النشر الحقيقية
+            window.publishToFirebase = async () => {
+                const btn = document.getElementById('btn-save');
+                btn.disabled = true;
+                btn.innerText = "جاري الحفظ...";
+
+                try {
+                    await addDoc(collection(db, "products"), {
+                        name: document.getElementById('p_name').value,
+                        price: parseFloat(document.getElementById('p_price').value),
+                        image: document.getElementById('p_img').value,
+                        createdAt: new Date()
+                    });
+                    alert("تم النشر بنجاح!");
+                    document.getElementById('modal').style.display = 'none';
+                } catch (e) {
+                    alert("خطأ: تأكد من إعدادات Firestore (Rules)");
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = "نشر الآن";
+                }
+            };
+        }
+
+        // الاستماع اللحظي للبيانات (Real-time)
+        function startListening(db) {
+            // تحديث عدد المنتجات وعرضها
+            onSnapshot(collection(db, "products"), (snap) => {
+                document.getElementById('total-products').innerText = snap.size;
+                const list = document.getElementById('products-list');
+                list.innerHTML = "";
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    list.innerHTML += `
+                        <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
+                            <div class="flex items-center gap-3">
+                                <img src="${data.image}" class="w-8 h-8 rounded object-cover bg-black">
+                                <span class="text-xs font-bold">${data.name}</span>
+                            </div>
+                            <span class="text-orange-500 text-xs font-mono">${data.price} ج.س</span>
+                        </div>
+                    `;
+                });
+            });
+
+            // تحديث المبيعات والمستخدمين
+            onSnapshot(collection(db, "orders"), (snap) => {
+                document.getElementById('total-orders').innerText = snap.size;
+            });
+            onSnapshot(collection(db, "users"), (snap) => {
+                document.getElementById('total-users').innerText = snap.size;
+            });
+        }
+    </script>
+</body>
+</html>
+

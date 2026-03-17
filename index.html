@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibrex - Style Woven With Identity</title>
+    <meta name="description" content="Fibrex - Premium Sudanese Fashion Brand. Style Woven With Identity.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            orange: '#FF6A00',
+                            dark: '#0a0a0a',
+                            gray: '#1a1a1a'
+                        }
+                    },
+                    fontFamily: {
+                        arabic: ['Cairo', 'sans-serif'],
+                        english: ['Inter', 'sans-serif']
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 106, 0, 0.1);
+            border-color: rgba(255, 106, 0, 0.3);
+        }
+
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF6A00;
+            border-radius: 4px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 106, 0, 0.4); }
+            50% { box-shadow: 0 0 0 20px rgba(255, 106, 0, 0); }
+        }
+        .pulse-orange { animation: pulse-orange 2s infinite; }
+
+        /* Page Transitions */
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Product Card Hover */
+        .product-card .overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .product-card:hover .overlay {
+            opacity: 1;
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #FF6A00 0%, #ff8533 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Custom Checkbox */
+        .custom-checkbox:checked {
+            background-color: #FF6A00;
+            border-color: #FF6A00;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Toast Notification */
+        .toast {
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+            --tw-space-x-reverse: 1;
+        }
+    </style>
+</head>
+<body class="antialiased">
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full z-50 top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="router.navigate('home')">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-white font-bold text-xl">F</span>
+                    </div>
+                    <span class="text-2xl font-bold tracking-wider">FIBREX</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8 space-x-reverse">
+                    <a onclick="router.navigate('home')" class="nav-link cursor-pointer hover:text-orange-500 transition-colors">الرئيسية</a>
+                    <a onclick="router.navigate('shop')" class="nav-link cursor-pointer hover:text-orange-500 transition-colors">المتجر</a>
+                    <a onclick="router.navigate('about')" class="nav-link cursor-pointer hover:text-orange-500 transition-colors">من نحن</a>
+                    <a onclick="router.navigate('contact')" class="nav-link cursor-pointer hover:text-orange-500 transition-colors">تواصل معنا</a>
+                    <a onclick="router.navigate('faq')" class="nav-link cursor-pointer hover:text-orange-500 transition-colors">الأسئلة الشائعة</a>
+                </div>
+
+                <!-- Icons -->
+                <div class="flex items-center space-x-6 space-x-reverse">
+                    <button onclick="toggleLanguage()" class="hover:text-orange-500 transition-colors">
+                        <span id="lang-btn" class="text-sm font-semibold">EN</span>
+                    </button>
+                    <button onclick="router.navigate('wishlist')" class="hover:text-orange-500 transition-colors relative">
+                        <i class="fas fa-heart text-xl"></i>
+                        <span id="wishlist-count" class="absolute -top-2 -right-2 bg-orange-500 text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button onclick="router.navigate('cart')" class="hover:text-orange-500 transition-colors relative">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-orange-500 text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button onclick="router.navigate('track')" class="hover:text-orange-500 transition-colors">
+                        <i class="fas fa-truck text-xl"></i>
+                    </button>
+                    <button class="md:hidden text-2xl" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu fixed inset-y-0 right-0 w-64 glass z-50 p-6 md:hidden">
+        <button onclick="toggleMobileMenu()" class="absolute top-4 left-4 text-2xl">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="mt-12 space-y-6">
+            <a onclick="router.navigate('home'); toggleMobileMenu()" class="block text-lg hover:text-orange-500">الرئيسية</a>
+            <a onclick="router.navigate('shop'); toggleMobileMenu()" class="block text-lg hover:text-orange-500">المتجر</a>
+            <a onclick="router.navigate('about'); toggleMobileMenu()" class="block text-lg hover:text-orange-500">من نحن</a>
+            <a onclick="router.navigate('contact'); toggleMobileMenu()" class="block text-lg hover:text-orange-500">تواصل معنا</a>
+            <a onclick="router.navigate('faq'); toggleMobileMenu()" class="block text-lg hover:text-orange-500">الأسئلة الشائعة</a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="pt-20 min-h-screen">
+        
+        <!-- Home Page -->
+        <div id="page-home" class="page active">
+            <!-- Hero Section -->
+            <section class="relative h-screen flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 z-0">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black"></div>
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1920&q=80')] bg-cover bg-center opacity-40"></div>
+                </div>
+                
+                <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+                    <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight animate-float">
+                        <span class="block text-gradient">Style Woven</span>
+                        <span class="block text-white">With Identity</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                        اكتشف تشكيلة فريدة من الأزياء السودانية العصرية تجمع بين الأصالة والمعاصرة
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="router.navigate('shop')" class="px-8 py-4 bg-orange-500 hover:bg-orange-600 rounded-full font-bold text-lg transition-all transform hover:scale-105 pulse-orange">
+                            تسوق الآن
+                        </button>
+                        <button onclick="router.navigate('about')" class="px-8 py-4 glass hover:bg-white/10 rounded-full font-bold text-lg transition-all">
+                            قصتنا
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scroll Indicator -->
+                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+                    <i class="fas fa-chevron-down text-2xl text-orange-500"></i>
+                </div>
+            </section>
+
+            <!-- Featured Categories -->
+            <section class="py-20 px-4 max-w-7xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">تصنيفاتنا المميزة</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div onclick="router.navigate('shop', {category: 'men'})" class="glass-card rounded-2xl overflow-hidden cursor-pointer group h-96 relative">
+                        <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Men">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">رجالي</h3>
+                                <p class="text-gray-300">أزياء عصرية بأناقة سودانية</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div onclick="router.navigate('shop', {category: 'women'})" class="glass-card rounded-2xl overflow-hidden cursor-pointer group h-96 relative">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Women">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">نسائي</h3>
+                                <p class="text-gray-300">أناقة وتميز في كل قطعة</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div onclick="router.navigate('shop', {category: 'new'})" class="glass-card rounded-2xl overflow-hidden cursor-pointer group h-96 relative">
+                        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="New Collection">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">الجديد</h3>
+                                <p class="text-gray-300">آخر صيحات الموضة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Products -->
+            <section class="py-20 px-4 max-w-7xl mx-auto">
+                <div class="flex justify-between items-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">منتجات مميزة</h2>
+                    <button onclick="router.navigate('shop')" class="text-orange-500 hover:text-orange-400 font-semibold flex items-center gap-2">
+                        عرض الكل <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+                <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Products injected via JS -->
+                </div>
+            </section>
+
+            <!-- Instagram Feed -->
+            <section class="py-20 px-4 max-w-7xl mx-auto">
+                <h2 class="text-3xl font-bold text-center mb-4">تابعنا على إنستغرام</h2>
+                <p class="text-center text-gray-400 mb-12">@fibrex.sd</p>
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
+                    <div class="aspect-square glass-card rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=300&q=80" class="w-full h-full object-cover" alt="Instagram">
+                    </div>
+                    <div class="aspect-square glass-card rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=300&q=80" class="w-full h-full object-cover" alt="Instagram">
+                    </div>
+                    <div class="aspect-square glass-card rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300&q=80" class="w-full h-full object-cover" alt="Instagram">
+                    </div>
+                    <div class="aspect-square glass-card rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300&q=80" class="w-full h-full object-cover" alt="Instagram">
+                    </div>
+                    <div class="aspect-square glass-card rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1485968579169-a6e9dc7c0574?w=300&q=80" class="w-full h-full object-cover" alt="Instagram">
+                    </div>
+                    <div class="aspect-square glass-card rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                        <img src="https://images.unsplash.com/photo-1475180429745-7f97bc87f4d6?w=300&q=80" class="w-full h-full object-cover" alt="Instagram">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Newsletter -->
+            <section class="py-20 px-4">
+                <div class="max-w-4xl mx-auto glass rounded-3xl p-8 md:p-12 text-center relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-orange-500/10 to-transparent"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-3xl font-bold mb-4">اشترك في نشرتنا الإخبارية</h2>
+                        <p class="text-gray-300 mb-8">احصل على أحدث العروض والتشكيلات الجديدة مباشرة إلى بريدك</p>
+                        <form onsubmit="handleNewsletter(event)" class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                            <input type="email" placeholder="بريدك الإلكتروني" required class="flex-1 px-6 py-3 rounded-full bg-white/10 border border-white/20 focus:border-orange-500 focus:outline-none text-right">
+                            <button type="submit" class="px-8 py-3 bg-orange-500 hover:bg-orange-600 rounded-full font-bold transition-colors">
+                                اشتراك
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Shop Page -->
+        <div id="page-shop" class="page">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <!-- Breadcrumb -->
+                <div class="flex items-center gap-2 text-sm text-gray-400 mb-8">
+                    <span onclick="router.navigate('home')" class="cursor-pointer hover:text-orange-500">الرئيسية</span>
+                    <i class="fas fa-chevron-left text-xs"></i>
+                    <span class="text-white">المتجر</span>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Sidebar Filters -->
+                    <aside class="lg:w-64 space-y-6">
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                <i class="fas fa-filter text-orange-500"></i> الفلاتر
+                            </h3>
+                            
+                            <!-- Categories -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-3">التصنيفات</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="custom-checkbox rounded" onchange="filterProducts()">
+                                        <span>رجالي</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="custom-checkbox rounded" onchange="filterProducts()">
+                                        <span>نسائي</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="custom-checkbox rounded" onchange="filterProducts()">
+                                        <span>الجديد</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" class="custom-checkbox rounded" onchange="filterProducts()">
+                                        <span>عروض خاصة</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Price Range -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-3">نطاق السعر</h4>
+                                <input type="range" min="0" max="500" class="w-full accent-orange-500" oninput="updatePriceLabel(this.value)">
+                                <div class="flex justify-between text-sm text-gray-400 mt-2">
+                                    <span>0 ج.س</span>
+                                    <span id="price-label">500 ج.س</span>
+                                </div>
+                            </div>
+
+                            <!-- Sizes -->
+                            <div>
+                                <h4 class="font-semibold mb-3">المقاسات</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="px-3 py-1 rounded border border-white/20 hover:border-orange-500 hover:text-orange-500 transition-colors text-sm">S</button>
+                                    <button class="px-3 py-1 rounded border border-white/20 hover:border-orange-500 hover:text-orange-500 transition-colors text-sm">M</button>
+                                    <button class="px-3 py-1 rounded border border-white/20 hover:border-orange-500 hover:text-orange-500 transition-colors text-sm">L</button>
+                                    <button class="px-3 py-1 rounded border border-white/20 hover:border-orange-500 hover:text-orange-500 transition-colors text-sm">XL</button>
+                                    <button class="px-3 py-1 rounded border border-white/20 hover:border-orange-500 hover:text-orange-500 transition-colors text-sm">XXL</button>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Products Grid -->
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-6">
+                            <span id="products-count" class="text-gray-400">عرض 12 منتج</span>
+                            <select class="glass rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-orange-500" onchange="sortProducts(this.value)">
+                                <option value="newest">الأحدث</option>
+                                <option value="price-low">السعر: من الأقل للأعلى</option>
+                                <option value="price-high">السعر: من الأعلى للأقل</option>
+                                <option value="popular">الأكثر شعبية</option>
+                            </select>
+                        </div>
+                        <div id="shop-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Products injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Detail Page -->
+        <div id="page-product" class="page">
+            <div class="max-w-7xl mx-auto px-4 py-8">
+                <div id="product-detail-content">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Page -->
+        <div id="page-cart" class="page">
+            <div class="max-w-4xl mx-auto px-4 py-8">
+                <h1 class="text-3xl font-bold mb-8">سلة التسوق</h1>
+                
+                <div id="cart-content" class="space-y-4">
+                    <!-- Cart items injected via JS -->
+                </div>
+
+                <div id="cart-empty" class="hidden text-center py-20">
+                    <i class="fas fa-shopping-bag text-6xl text-gray-600 mb-4"></i>
+                    <p class="text-xl text-gray-400">سلة التسوق فارغة</p>
+                    <button onclick="router.navigate('shop')" class="mt-6 px-6 py-3 bg-orange-500 rounded-full hover:bg-orange-600 transition-colors">
+                        مواصلة التسوق
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Page -->
+        <div id="page-checkout" class="page">
+            <div class="max-w-6xl mx-auto px-4 py-8">
+                <h1 class="text-3xl font-bold mb-8">إتمام الطلب</h1>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Checkout Form -->
+                    <div class="glass rounded-2xl p-6">
+                        <h2 class="text-xl font-bold mb-6">معلومات الشحن</h2>
+                        <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="الاسم الأول" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                                <input type="text" placeholder="الاسم الأخير" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                            </div>
+                            <input type="email" placeholder="البريد الإلكتروني" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                            <input type="tel" placeholder="رقم الهاتف" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                            <input type="text" placeholder="العنوان" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="المدينة" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                                <input type="text" placeholder="الرمز البريدي" class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                            </div>
+
+                            <h3 class="text-lg font-bold mt-6 mb-4">طريقة الدفع</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-center gap-3 p-4 rounded-lg border border-white/10 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <input type="radio" name="payment" value="cod" checked class="accent-orange-500">
+                                    <div class="flex-1">
+                                        <div class="font-semibold">الدفع عند الاستلام</div>
+                                        <div class="text-sm text-gray-400">متاح في جميع ولايات السودان</div>
+                                    </div>
+                                    <i class="fas fa-money-bill-wave text-orange-500"></i>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 rounded-lg border border-white/10 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <input type="radio" name="payment" value="bank" class="accent-orange-500">
+                                    <div class="flex-1">
+                                        <div class="font-semibold">تحويل بنكي</div>
+                                        <div class="text-sm text-gray-400">بنك الخرطوم - فيصل الإسلامي</div>
+                                    </div>
+                                    <i class="fas fa-university text-orange-500"></i>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 rounded-lg border border-white/10 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <input type="radio" name="payment" value="stripe" class="accent-orange-500">
+                                    <div class="flex-1">
+                                        <div class="font-semibold">بطاقة ائتمانية</div>
+                                        <div class="text-sm text-gray-400">Visa / Mastercard</div>
+                                    </div>
+                                    <i class="fab fa-cc-visa text-orange-500"></i>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 rounded-lg border border-white/10 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <input type="radio" name="payment" value="paypal" class="accent-orange-500">
+                                    <div class="flex-1">
+                                        <div class="font-semibold">PayPal</div>
+                                        <div class="text-sm text-gray-400">الدفع الدولي</div>
+                                    </div>
+                                    <i class="fab fa-paypal text-orange-500"></i>
+                                </label>
+                                <label class="flex items-center gap-3 p-4 rounded-lg border border-white/10 cursor-pointer hover:border-orange-500 transition-colors">
+                                    <input type="radio" name="payment" value="whatsapp" class="accent-orange-500">
+                                    <div class="flex-1">
+                                        <div class="font-semibold">طلب عبر واتساب</div>
+                                        <div class="text-sm text-gray-400">تواصل مباشرة لإتمام الطلب</div>
+                                    </div>
+                                    <i class="fab fa-whatsapp text-green-500"></i>
+                                </label>
+                            </div>
+
+                            <div class="mt-6">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="coupon-toggle" class="custom-checkbox" onchange="toggleCoupon()">
+                                    <span>لدي كوبون خصم</span>
+                                </label>
+                                <div id="coupon-input" class="hidden mt-2 flex gap-2">
+                                    <input type="text" id="coupon-code" placeholder="أدخل الكود" class="flex-1 px-4 py-2 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none uppercase">
+                                    <button type="button" onclick="applyCoupon()" class="px-4 py-2 bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors">تطبيق</button>
+                                </div>
+                                <p id="coupon-message" class="text-sm mt-2 hidden"></p>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 bg-orange-500 hover:bg-orange-600 rounded-lg font-bold text-lg transition-colors mt-6">
+                                تأكيد الطلب
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="glass rounded-2xl p-6 h-fit">
+                        <h2 class="text-xl font-bold mb-6">ملخص الطلب</h2>
+                        <div id="checkout-items" class="space-y-4 mb-6 max-h-64 overflow-y-auto">
+                            <!-- Items injected via JS -->
+                        </div>
+                        <div class="border-t border-white/10 pt-4 space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">المجموع الفرعي</span>
+                                <span id="checkout-subtotal">0 ج.س</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">الشحن</span>
+                                <span id="checkout-shipping">مجاني</span>
+                            </div>
+                            <div id="discount-row" class="flex justify-between text-green-400 hidden">
+                                <span>الخصم</span>
+                                <span id="checkout-discount">-0 ج.س</span>
+                            </div>
+                            <div class="flex justify-between text-xl font-bold pt-2 border-t border-white/10">
+                                <span>الإجمالي</span>
+                                <span id="checkout-total" class="text-orange-500">0 ج.س</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div id="page-about" class="page">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">قصة فيبركس</h1>
+                    <p class="text-xl text-gray-300">نحو عالمية الأزياء السودانية</p>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="glass rounded-2xl p-8 md:p-12">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h2 class="text-2xl font-bold mb-4 text-orange-500">هويتنا</h2>
+                                <p class="text-gray-300 leading-relaxed mb-4">
+                                    فيبركس هي علامة تجارية سودانية فاخرة تجمع بين التراث الثقافي الغني للسودان والتصاميم العصرية. نؤمن بأن الأزياء هي لغة عالمية تحكي قصص الهوية والأصالة.
+                                </p>
+                                <p class="text-gray-300 leading-relaxed">
+                                    منذ تأسيسنا في الخرطوم، نسعى لإبراز الجمال الفريد للنسيج السوداني وتقنيات الحياكة التقليدية في إطار معاصر يناسب أذواق الشباب في السودان والعالم العربي.
+                                </p>
+                            </div>
+                            <div class="relative">
+                                <div class="aspect-square rounded-2xl overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80" class="w-full h-full object-cover" alt="About Fibrex">
+                                </div>
+                                <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center text-2xl font-bold">
+                                    2019
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="glass-card rounded-2xl p-6 text-center">
+                            <div class="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-leaf text-2xl text-orange-500"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">استدامة</h3>
+                            <p class="text-gray-400 text-sm">نستخدم مواد صديقة للبيئة ونعمل مع حرفيين محليين</p>
+                        </div>
+                        <div class="glass-card rounded-2xl p-6 text-center">
+                            <div class="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-gem text-2xl text-orange-500"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">جودة</h3>
+                            <p class="text-gray-400 text-sm">أقمشة مختارة بعناية وتصنيع يدوي دقيق</p>
+                        </div>
+                        <div class="glass-card rounded-2xl p-6 text-center">
+                            <div class="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-users text-2xl text-orange-500"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">مجتمع</h3>
+                            <p class="text-gray-400 text-sm">ندعم المجتمعات المحلية ونحتفي بالتنوع</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div id="page-contact" class="page">
+            <div class="max-w-6xl mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold mb-4">تواصل معنا</h1>
+                    <p class="text-gray-400">نحن هنا لمساعدتك في أي وقت</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="glass rounded-2xl p-8">
+                        <h2 class="text-2xl font-bold mb-6">أرسل رسالة</h2>
+                        <form onsubmit="handleContact(event)" class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="الاسم" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                                <input type="email" placeholder="البريد الإلكتروني" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                            </div>
+                            <input type="text" placeholder="الموضوع" required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none">
+                            <textarea rows="5" placeholder="رسالتك..." required class="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none resize-none"></textarea>
+                            <button type="submit" class="w-full py-3 bg-orange-500 hover:bg-orange-600 rounded-lg font-bold transition-colors">
+                                إرسال الرسالة
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                <i class="fab fa-whatsapp text-2xl text-green-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">واتساب</h3>
+                                <p class="text-gray-400">+249909466854</p>
+                                <a href="https://wa.me/249912345678" target="_blank" class="text-orange-500 text-sm hover:underline">تواصل مباشرة</a>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-envelope text-2xl text-orange-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">البريد الإلكتروني</h3>
+                                <p class="text-gray-400">info@fibrex.sd</p>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-2xl p-6 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-2xl text-orange-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">الموقع</h3>
+                                <p class="text-gray-400">الخرطوم، السودان - شارع النيل</p>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="font-bold mb-4">ساعات العمل</h3>
+                            <div class="space-y-2 text-gray-400">
+                                <div class="flex justify-between">
+                                    <span>السبت - الخميس</span>
+                                    <span>9:00 ص - 9:00 م</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>الجمعة</span>
+                                    <span>4:00 م - 9:00 م</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Track Order Page -->
+        <div id="page-track" class="page">
+            <div class="max-w-2xl mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold mb-4">تتبع طلبك</h1>
+                    <p class="text-gray-400">أدخل رقم الطلب لمعرفة حالة الشحن</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8">
+                    <form onsubmit="trackOrder(event)" class="flex gap-4 mb-8">
+                        <input type="text" id="track-input" placeholder="رقم الطلب (مثال: FRX-2024-001)" required class="flex-1 px-6 py-3 rounded-lg bg-white/5 border border-white/10 focus:border-orange-500 focus:outline-none text-center uppercase tracking-wider">
+                        <button type="submit" class="px-8 py-3 bg-orange-500 hover:bg-orange-600 rounded-lg font-bold transition-colors">
+                            تتبع
+                        </button>
+                    </form>
+
+                    <div id="tracking-result" class="hidden space-y-6">
+                        <div class="flex justify-between items-center pb-4 border-b border-white/10">
+                            <div>
+                                <p class="text-gray-400 text-sm">رقم الطلب</p>
+                                <p id="track-order-id" class="font-bold text-lg"></p>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-gray-400 text-sm">الحالة</p>
+                                <span id="track-status" class="inline-block px-3 py-1 rounded-full text-sm font-bold bg-orange-500/20 text-orange-500">
+                                    قيد المعالجة
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-white/10"></div>
+                            <div class="space-y-8 relative">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center z-10">
+                                        <i class="fas fa-check text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">تم تأكيد الطلب</p>
+                                        <p class="text-sm text-gray-400">24 فبراير 2024 - 10:30 ص</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center z-10">
+                                        <i class="fas fa-check text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">جاري التجهيز</p>
+                                        <p class="text-sm text-gray-400">25 فبراير 2024 - 02:00 م</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center z-10">
+                                        <i class="fas fa-truck text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-400">تم الشحن</p>
+                                        <p class="text-sm text-gray-400">قريباً</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center z-10">
+                                        <i class="fas fa-home text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-gray-400">تم التسليم</p>
+                                        <p class="text-sm text-gray-400">قريباً</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Page -->
+        <div id="page-faq" class="page">
+            <div class="max-w-3xl mx-auto px-4 py-12">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold mb-4">الأسئلة الشائعة</h1>
+                    <p class="text-gray-400">إجابات على استفساراتك الأكثر شيوعاً</p>
+                </div>
+
+                <div class="space-y-4" id="faq-container">
+                    <!-- FAQ Items -->
+                    <div class="glass rounded-xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full px-6 py-4 flex justify-between items-center text-right hover:bg-white/5 transition-colors">
+                            <span class="font-bold">ما هي طرق الدفع المتاحة؟</span>
+                            <i class="fas fa-chevron-down transition-transform"></i>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-300">
+                            ندعم الدفع عند الاستلام (COD) في جميع ولايات السودان، التحويل البنكي، البطاقات الائتمانية عبر Stripe، PayPal للدولي، والطلب عبر واتساب.
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full px-6 py-4 flex justify-between items-center text-right hover:bg-white/5 transition-colors">
+                            <span class="font-bold">كم تستغرق عملية الشحن؟</span>
+                            <i class="fas fa-chevron-down transition-transform"></i>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-300">
+                            داخل الخرطوم: 1-2 يوم عمل. الولايات الأخرى: 3-5 أيام عمل. الشحن الدولي: 7-14 يوم عمل حسب الوجهة.
+                        </div>
+                    </div>
+
+                    <div class="glass rounded-xl overflow-hidden">
+                        <button onclick="toggleFaq(this)" class="w-full px-6 py-4 flex justify-between items-center text-right hover:bg-white/5 transition-colors">
+                            <span class="font-bold">هل يمكنني إرجاع أو استبدال المنتج؟</span>
+                            <i class="fas fa-chevron-down transition-transform"></i>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-300">
+                            نعم، يمكنك إرجاع المنتج خلال 14 يوماً من استلامه بشرط أن يكون في حالته الأصلية مع الفاتورة. الاستبدال متاح خلال 30 يوماً.
+                 

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibrex - تفاصيل المنتج</title>
+    
+    <!-- Tailwind CSS & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
+        
+        .glass-nav {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .product-image-container {
+            background: linear-gradient(145deg, #111, #050505);
+            border-radius: 2rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .size-btn.active {
+            background: #FF6A00;
+            color: white;
+            border-color: #FF6A00;
+        }
+
+        .quantity-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+        /* تظهر عند التحميل من الفايربيس */
+        .skeleton {
+            background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+<!-- Navigation Bar -->
+<nav class="glass-nav sticky top-0 z-50 py-4 px-6 flex justify-between items-center">
+    <a href="index.html" class="text-gray-400 hover:text-white transition-all">
+        <i class="fas fa-arrow-right ml-2"></i> العودة للمتجر
+    </a>
+    <div class="font-black text-xl tracking-tighter">FIBREX<span class="text-orange-500">.</span></div>
+    <div class="relative">
+        <i class="fas fa-shopping-bag text-lg"></i>
+        <span id="cart-count" class="absolute -top-2 -left-2 bg-orange-500 text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-10 px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        
+        <!-- Left: Product Images (Firebase Ready) -->
+        <div class="space-y-4">
+            <div class="product-image-container aspect-[3/4] relative group">
+                <img id="main-product-image" src="https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=800" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Product">
+                <div class="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/10">
+                    جديد
+                </div>
+            </div>
+            <!-- Thumbnails Container -->
+            <div id="thumbnails-container" class="grid grid-cols-4 gap-4">
+                <!-- سيتم ملؤها ديناميكياً من الفايربيس -->
+                <div onclick="changeImage(this.src)" class="cursor-pointer rounded-xl overflow-hidden border border-white/10 opacity-50 hover:opacity-100 transition-all">
+                    <img src="https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=200" class="w-full h-24 object-cover">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Product Info -->
+        <div class="flex flex-col justify-center space-y-8">
+            <div class="space-y-2">
+                <h1 id="product-name" class="text-4xl md:text-5xl font-black">جاري التحميل...</h1>
+                <div class="flex items-center gap-4">
+                    <span id="product-price" class="text-2xl font-bold text-orange-500">0.00 ج.س</span>
+                    <span class="text-sm text-gray-500 line-through" id="old-price"></span>
+                </div>
+            </div>
+
+            <p id="product-desc" class="text-gray-400 leading-relaxed text-sm md:text-base">
+                يرجى الانتظار بينما نقوم بجلب تفاصيل هذا المنتج من خوادمنا...
+            </p>
+
+            <!-- Selection Options -->
+            <div class="space-y-6">
+                <!-- Size Selection -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500">المقاس المتاح</h3>
+                    <div id="size-options" class="flex flex-wrap gap-3">
+                        <!-- سيتم إنتاج هذه الأزرار من مصفوفة في الفايربيس -->
+                    </div>
+                </div>
+
+                <!-- Color Selection (If needed) -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500">اللون</h3>
+                    <div id="color-options" class="flex gap-3">
+                        <!-- الدوائر اللونية -->
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-500">الكمية</h3>
+                    <div class="flex items-center gap-4">
+                        <button onclick="updateQty(-1)" class="quantity-btn"><i class="fas fa-minus text-xs"></i></button>
+                        <span id="qty-value" class="text-xl font-bold w-8 text-center">1</span>
+                        <button onclick="updateQty(1)" class="quantity-btn"><i class="fas fa-plus text-xs"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                <button onclick="addToCart()" class="flex-1 bg-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-orange-500 hover:text-white transition-all active:scale-95">
+                    <i class="fas fa-shopping-cart"></i> إضافة للسلة
+                </button>
+                <button onclick="toggleWishlist()" class="p-5 rounded-2xl border border-white/10 hover:bg-white/5 transition-all">
+                    <i id="wish-icon" class="far fa-heart text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="grid grid-cols-2 gap-4 pt-8 border-t border-white/5">
+                <div class="flex items-center gap-3 text-xs text-gray-500">
+                    <i class="fas fa-truck text-orange-500"></i> توصيل سريع (24-48 ساعة)
+                </div>
+                <div class="flex items-center gap-3 text-xs text-gray-500">
+                    <i class="fas fa-shield-alt text-orange-500"></i> جودة مضمونة من فيبركس
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // 1. منطق الفايربيس (Firebase Simulation Logic)
+    
+    // محاكاة جلب الـ ID من الرابط: example.com/product.html?id=XYZ
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id') || 'DEFAULT_ID';
+
+    // بيانات افتراضية تمثل ما سيأتي من Firestore
+    const mockProduct = {
+        name: "قميص فيبركس سديري - أسود ملكي",
+        price: 24500,
+        oldPrice: 30000,
+        desc: "تم تصميم هذا القميص يدوياً بعناية فائقة، باستخدام أجود أنواع الأقمشة السودانية الممزوجة بالخيوط الإيطالية لضمان الراحة والأناقة في آن واحد. مثالي للمناسبات الرسمية والاجتماعية.",
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        colors: ["#000000", "#1a1a1a", "#4a4a4a"],
+        images: [
+            "https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=800",
+            "https://images.unsplash.com/photo-1617137968427-85924c800a22?w=800"
+        ]
+    };
+
+    // تعبئة البيانات في الصفحة عند التحميل
+    window.onload = function() {
+        console.log("جلب المنتج رقم: " + productId);
+        
+        // جلب العناصر
+        document.getElementById('product-name').innerText = mockProduct.name;
+        document.getElementById('product-price').innerText = mockProduct.price.toLocaleString() + " ج.س";
+        document.getElementById('old-price').innerText = mockProduct.oldPrice.toLocaleString() + " ج.س";
+        document.getElementById('product-desc').innerText = mockProduct.desc;
+        
+        // تعبئة المقاسات
+        const sizeContainer = document.getElementById('size-options');
+        mockProduct.sizes.forEach(size => {
+            const btn = document.createElement('button');
+            btn.className = "size-btn px-6 py-3 rounded-xl border border-white/10 text-sm font-bold transition-all hover:border-orange-500";
+            btn.innerText = size;
+            btn.onclick = function() {
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            };
+            sizeContainer.appendChild(btn);
+        });
+
+        // تفعيل أول مقاس كافتراضي
+        sizeContainer.firstChild.classList.add('active');
+    };
+
+    // 2. دوال التفاعل مع الصفحة
+    let currentQty = 1;
+    function updateQty(val) {
+        currentQty += val;
+        if (currentQty < 1) currentQty = 1;
+        document.getElementById('qty-value').innerText = currentQty;
+    }
+
+    function changeImage(src) {
+        document.getElementById('main-product-image').src = src;
+    }
+
+    function addToCart() {
+        // هنا يتم استدعاء كود Firebase لإضافة المنتج لمجموعة السلة (Carts)
+        const selectedSize = document.querySelector('.size-btn.active')?.innerText;
+        
+        alert(`تمت إضافة ${currentQty} من (${mockProduct.name}) مقاس ${selectedSize} إلى السلة.`);
+        
+        // تحديث الرقم في الـ UI
+        const count = document.getElementById('cart-count');
+        count.innerText = parseInt(count.innerText) + currentQty;
+        count.classList.add('animate-bounce');
+        setTimeout(() => count.classList.remove('animate-bounce'), 1000);
+    }
+
+    function toggleWishlist() {
+        const icon = document.getElementById('wish-icon');
+        icon.classList.toggle('far');
+        icon.classList.toggle('fas');
+        icon.classList.toggle('text-red-500');
+    }
+</script>
+
+</body>
+</html>
+

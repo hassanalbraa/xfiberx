@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibrex - قائمة الأمنيات</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: #FF6A00;
+        }
+
+        .add-to-cart-btn {
+            background: #FF6A00;
+            color: white;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover .add-to-cart-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .remove-wish {
+            background: rgba(255, 59, 48, 0.1);
+            color: #FF3B30;
+            transition: all 0.2s;
+        }
+
+        .remove-wish:hover {
+            background: #FF3B30;
+            color: white;
+        }
+
+        #empty-state { display: none; }
+    </style>
+</head>
+<body>
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+<nav class="p-6 border-b border-white/5 flex justify-between items-center bg-black/50 backdrop-blur-md sticky top-0 z-40">
+    <a href="shop.html" class="text-gray-400 hover:text-white transition-all text-sm">
+        <i class="fas fa-chevron-right ml-2"></i> استمرار التسوق
+    </a>
+    <div class="font-black text-2xl tracking-tighter">FIBREX<span class="text-orange-500">.</span></div>
+    <div class="flex items-center gap-6">
+        <div class="relative">
+            <i class="fas fa-shopping-bag text-lg"></i>
+            <span id="cart-count" class="absolute -top-2 -left-2 bg-orange-500 text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">3</span>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-12 px-6">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+        <div>
+            <h1 class="text-4xl font-black mb-2">قائمة المفضلة</h1>
+            <p class="text-gray-400 text-sm">المنتجات التي قمت بحفظها لشرائها لاحقاً.</p>
+        </div>
+        <button onclick="clearAllWishlist()" class="text-xs text-red-500 font-bold hover:underline">حذف جميع العناصر</button>
+    </div>
+
+    <!-- Wishlist Grid -->
+    <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <!-- سيتم توليد العناصر هنا من الفايربيس -->
+    </div>
+
+    <!-- Empty Wishlist State -->
+    <div id="empty-state" class="flex flex-col items-center justify-center py-32 text-center">
+        <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6">
+            <i class="far fa-heart text-4xl text-gray-700"></i>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">لا توجد منتجات مفضلة</h2>
+        <p class="text-gray-500 mb-8 max-w-xs">قائمة أمنياتك فارغة حالياً. تصفح المتجر وأضف ما يعجبك!</p>
+        <a href="shop.html" class="bg-orange-500 px-10 py-4 rounded-2xl font-black text-black hover:bg-orange-600 transition-all">تصفح المتجر الآن</a>
+    </div>
+
+</main>
+
+<script>
+    // --- Firebase Logic Simulation ---
+
+    // محاكاة بيانات المفضلة (Collection: users/userId/wishlist)
+    let wishlistItems = [
+        { 
+            id: 'prod_101', 
+            name: 'قميص أبيض كلاسيك', 
+            price: 15500, 
+            img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500',
+            inStock: true 
+        },
+        { 
+            id: 'prod_105', 
+            name: 'سديري فاخر - رمادي', 
+            price: 32000, 
+            img: 'https://images.unsplash.com/photo-1594932224456-8023b7243c15?w=500',
+            inStock: true 
+        },
+        { 
+            id: 'prod_109', 
+            name: 'شال قطني مطرز', 
+            price: 8500, 
+            img: 'https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?w=500',
+            inStock: false 
+        }
+    ];
+
+    function renderWishlist() {
+        const grid = document.getElementById('wishlist-grid');
+        const emptyState = document.getElementById('empty-state');
+
+        if (wishlistItems.length === 0) {
+            grid.style.display = 'none';
+            emptyState.style.display = 'flex';
+            return;
+        }
+
+        grid.style.display = 'grid';
+        emptyState.style.display = 'none';
+
+        grid.innerHTML = wishlistItems.map(item => `
+            <div class="product-card glass-card p-4 relative group">
+                <!-- Remove Button -->
+                <button onclick="removeFromWishlist('${item.id}')" class="remove-wish absolute top-6 right-6 z-20 w-8 h-8 rounded-full flex items-center justify-center">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
+
+                <!-- Image Area -->
+                <div class="aspect-[4/5] rounded-xl overflow-hidden mb-4 relative bg-black">
+                    <img src="${item.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-80" alt="${item.name}">
+                    
+                    ${!item.inStock ? '<div class="absolute inset-0 bg-black/60 flex items-center justify-center font-bold text-xs tracking-widest text-white uppercase">نفذت الكمية</div>' : ''}
+                    
+                    <button onclick="addToCart('${item.id}')" class="add-to-cart-btn absolute bottom-4 inset-x-4 py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 ${!item.inStock ? 'pointer-events-none grayscale opacity-50' : ''}">
+                        <i class="fas fa-shopping-cart"></i> نقل للسلة
+                    </button>
+                </div>
+
+                <!-- Info -->
+                <div class="space-y-1">
+                    <h3 class="font-bold text-sm text-gray-200">${item.name}</h3>
+                    <div class="flex justify-between items-center">
+                        <span class="text-orange-500 font-bold font-mono">${item.price.toLocaleString()} ج.س</span>
+                        <a href="product.html?id=${item.id}" class="text-[10px] text-gray-500 hover:text-white underline">التفاصيل</a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // --- Firebase Actions ---
+
+    function removeFromWishlist(id) {
+        // Firebase code: deleteDoc(doc(db, 'users', uid, 'wishlist', id))
+        wishlistItems = wishlistItems.filter(i => i.id !== id);
+        renderWishlist();
+    }
+
+    function addToCart(id) {
+        const item = wishlistItems.find(i => i.id === id);
+        // Firebase code: addDoc(collection(db, 'users', uid, 'cart'), item)
+        // ثم حذفه من المفضلة
+        removeFromWishlist(id);
+        alert(`تم نقل ${item.name} إلى سلة المشتريات!`);
+    }
+
+    function clearAllWishlist() {
+        if(confirm("هل أنت متأكد من مسح جميع المنتجات المحفوظة؟")) {
+            wishlistItems = [];
+            renderWishlist();
+        }
+    }
+
+    window.onload = renderWishlist;
+
+</script>
+
+</body>
+</html>
+

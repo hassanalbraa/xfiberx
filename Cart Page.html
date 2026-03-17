@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fibrex - سلة المشتريات</title>
+    
+    <!-- Tailwind CSS & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #fff; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:last-child { border-bottom: none; }
+
+        .qty-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .btn-premium {
+            background: #FF6A00;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-premium:hover {
+            background: #e65f00;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 106, 0, 0.2);
+        }
+
+        /* Empty Cart State */
+        #empty-cart-msg { display: none; }
+    </style>
+</head>
+<body>
+<!-- Global Navigation -->
+<nav style="background:#111;padding:15px;text-align:center;font-family:sans-serif">
+<a href="index.html" style="color:white;margin:10px">Home</a>
+<a href="Product Details Page.html" style="color:white;margin:10px">Products</a>
+<a href="Cart Page.html" style="color:white;margin:10px">Cart</a>
+<a href="Wishlist.html" style="color:white;margin:10px">Wishlist</a>
+<a href="Checkout Page.html" style="color:white;margin:10px">Checkout</a>
+<a href="User control panel.html" style="color:white;margin:10px">Account</a>
+<a href="Order Tracking.html" style="color:white;margin:10px">Track Order</a>
+<a href="Admin.html" style="color:white;margin:10px">Admin</a>
+</nav>
+
+
+<!-- Global Header -->
+<nav class="p-6 flex justify-between items-center border-b border-white/5">
+    <div class="font-black text-2xl tracking-tighter">FIBREX<span class="text-orange-500">.</span></div>
+    <a href="shop.html" class="text-sm text-gray-400 hover:text-white transition-all underline underline-offset-8">مواصلة التسوق</a>
+</nav>
+
+<main class="max-w-7xl mx-auto py-10 px-6">
+    <h1 class="text-3xl font-black mb-10">سلة المشتريات</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Left: Cart Items List -->
+        <div class="lg:col-span-8 space-y-6">
+            <div id="cart-items-container" class="glass-panel p-6">
+                <!-- Header (Desktop Only) -->
+                <div class="hidden md:grid grid-cols-4 text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-6 pb-4 border-b border-white/5">
+                    <div class="col-span-2">المنتج</div>
+                    <div class="text-center">الكمية</div>
+                    <div class="text-left">الإجمالي</div>
+                </div>
+
+                <!-- Cart Items will be injected here from Firebase -->
+                <div id="items-list">
+                    <!-- Example Item -->
+                    <div class="cart-item py-6 grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                        <div class="col-span-2 flex items-center gap-4">
+                            <div class="w-20 h-24 rounded-xl bg-white/5 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=200" class="w-full h-full object-cover">
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="font-bold text-sm md:text-base">قميص فيبركس الأسود</h3>
+                                <p class="text-xs text-gray-500">المقاس: L | اللون: أسود</p>
+                                <button class="text-[10px] text-red-500/70 hover:text-red-500 font-bold mt-2"><i class="fas fa-trash-alt ml-1"></i> حذف</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-center items-center gap-3">
+                            <button class="qty-input hover:bg-white/10 text-xs"><i class="fas fa-minus"></i></button>
+                            <span class="font-bold">1</span>
+                            <button class="qty-input hover:bg-white/10 text-xs"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <div class="text-right md:text-left font-bold text-orange-500">18,500 ج.س</div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="empty-cart-msg" class="text-center py-20">
+                    <i class="fas fa-shopping-basket text-5xl text-gray-700 mb-4"></i>
+                    <p class="text-gray-400">سلة المشتريات فارغة حالياً.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Order Summary -->
+        <div class="lg:col-span-4">
+            <div class="glass-panel p-8 sticky top-28 space-y-6">
+                <h2 class="text-xl font-bold">ملخص الطلب</h2>
+                
+                <div class="space-y-4 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">المجموع الفرعي</span>
+                        <span id="subtotal" class="font-bold font-mono">18,500 ج.س</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">رسوم التوصيل</span>
+                        <span id="shipping-cost" class="font-bold font-mono">2,500 ج.س</span>
+                    </div>
+                    <div class="pt-4 border-t border-white/5 flex justify-between items-end">
+                        <span class="text-lg font-bold">الإجمالي الكلي</span>
+                        <div class="text-right">
+                            <span id="grand-total" class="text-2xl font-black text-orange-500 font-mono">21,000 ج.س</span>
+                            <p class="text-[10px] text-gray-500">شامل ضريبة القيمة المضافة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promo Code -->
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">كود الخصم</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="promo-input" class="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm flex-1 outline-none focus:border-orange-500" placeholder="أدخل الكود">
+                        <button onclick="applyPromo()" class="bg-white/10 px-4 py-3 rounded-xl text-xs font-bold hover:bg-white/20">تطبيق</button>
+                    </div>
+                </div>
+
+                <button onclick="proceedToCheckout()" class="btn-premium w-full py-5 rounded-2xl font-black text-black tracking-widest flex items-center justify-center gap-3">
+                    <span>إتمام عملية الدفع</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+
+                <div class="flex justify-center gap-4 opacity-30 grayscale pt-4">
+                    <i class="fab fa-cc-visa text-2xl"></i>
+                    <i class="fab fa-cc-mastercard text-2xl"></i>
+                    <span class="font-bold text-xs uppercase">Bankak / Fawry</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // --- Firebase Integration Logic ---
+
+    // 1. مصفوفة لتمثيل البيانات القادمة من Firestore (Collection: carts/userId/items)
+    let cartItems = [
+        { id: 'item1', name: 'قميص فيبركس الأسود', price: 18500, qty: 1, size: 'L', img: 'https://images.unsplash.com/photo-1598033129183-c4f50c7176c8?w=200' },
+        { id: 'item2', name: 'بنطال تشينو كلاسيك', price: 12000, qty: 1, size: 'M', img: 'https://images.unsplash.com/photo-1473966968600-fa804b86d30b?w=200' }
+    ];
+
+    const SHIPPING_FEE = 2500;
+
+    // 2. تحديث واجهة السلة برمجياً (Render)
+    function renderCart() {
+        const list = document.getElementById('items-list');
+        const emptyMsg = document.getElementById('empty-cart-msg');
+        
+        if (cartItems.length === 0) {
+            list.innerHTML = "";
+            emptyMsg.style.display = 'block';
+            updateTotals(0);
+            return;
+        }
+
+        emptyMsg.style.display = 'none';
+        list.innerHTML = cartItems.map((item, index) => `
+            <div class="cart-item py-6 grid grid-cols-1 md:grid-cols-4 gap-6 items-center animate-in">
+                <div class="col-span-2 flex items-center gap-4">
+                    <div class="w-20 h-24 rounded-xl bg-white/5 overflow-hidden">
+                        <img src="${item.img}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-sm md:text-base text-white">${item.name}</h3>
+                        <p class="text-xs text-gray-500">المقاس: ${item.size}</p>
+                        <button onclick="removeItem('${item.id}')" class="text-[10px] text-red-500/70 hover:text-red-500 font-bold mt-2">
+                            <i class="fas fa-trash-alt ml-1"></i> حذف المنتج
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('${item.id}', -1)" class="qty-input hover:bg-white/10 text-xs"><i class="fas fa-minus"></i></button>
+                    <span class="font-bold w-6 text-center">${item.qty}</span>
+                    <button onclick="updateQty('${item.id}', 1)" class="qty-input hover:bg-white/10 text-xs"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="text-right md:text-left font-bold text-orange-500 font-mono">
+                    ${(item.price * item.qty).toLocaleString()} ج.س
+                </div>
+            </div>
+        `).join('');
+
+        const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
+        updateTotals(subtotal);
+    }
+
+    // 3. تحديث الحسابات (Calculation)
+    function updateTotals(subtotal) {
+        document.getElementById('subtotal').innerText = subtotal.toLocaleString() + " ج.س";
+        const grandTotal = subtotal > 0 ? subtotal + SHIPPING_FEE : 0;
+        document.getElementById('grand-total').innerText = grandTotal.toLocaleString() + " ج.س";
+        
+        // هنا يمكنك تحديث Firestore بقيمة الإجمالي الجديد للـ Cart
+    }
+
+    // 4. الدوال التفاعلية (Firebase CRUD Simulation)
+    function updateQty(id, change) {
+        const item = cartItems.find(i => i.id === id);
+        if (item) {
+            item.qty += change;
+            if (item.qty < 1) item.qty = 1;
+            // هنا تضع كود الفايربيس لتحديث الكمية في الـ Document
+            // updateDoc(doc(db, 'carts', userId, 'items', id), { qty: item.qty });
+            renderCart();
+        }
+    }
+
+    function removeItem(id) {
+        if(confirm("هل تريد حذف هذا المنتج من السلة؟")) {
+            cartItems = cartItems.filter(i => i.id !== id);
+            // هنا تضع كود الفايربيس لحذف الـ Document
+            // deleteDoc(doc(db, 'carts', userId, 'items', id));
+            renderCart();
+        }
+    }
+
+    function applyPromo() {
+        const code = document.getElementById('promo-input').value;
+        if (code === "FIBREX10") {
+            alert("تم تطبيق خصم 10% بنجاح!");
+        } else {
+            alert("كود غير صالح.");
+        }
+    }
+
+    function proceedToCheckout() {
+        if (cartItems.length === 0) {
+            alert("سلتك فارغة!");
+            return;
+        }
+        window.location.href = "checkout.html";
+    }
+
+    // تشغيل الصفحة
+    window.onload = renderCart;
+
+</script>
+
+</body>
+</html>
+
